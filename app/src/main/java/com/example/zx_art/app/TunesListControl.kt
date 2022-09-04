@@ -1,5 +1,6 @@
 package com.example.zx_art.app
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,15 +28,19 @@ fun TunesListControl() {
 
     // TODO йобанный паралелизм !!!!!
     LaunchedEffect(MKey.showingTunesPageNumber) {
-
-
-
         MKey.isPageUpload = withContext(coroutineContext) {
             println("ready to upload page")
             Request.uploadPage()
             true
         }
     }
+
+    LaunchedEffect(MKey.showingTunesCount){
+        // обновить список при смене кол-ва отображаемых мелодий на странице (только визуально)
+        Request.uploadPage()
+        Log.i("showingTunesCount", "${MKey.showingTunesCount}")
+    }
+
 
     LaunchedEffect(MKey.isPageUpload){
         println("ready to update playlist")
