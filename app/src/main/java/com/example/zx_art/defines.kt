@@ -19,3 +19,7 @@ val zxColor = listOf(
 const val UNDEFINED_MESSAGE = "undefined"
 const val LOADING_MESSAGE = "Loading"
 const val EMPTY_MESSAGE = ""
+const val DOUBLE_Q = "??"
+
+
+const val GOOGLE_TUNE = "https://storage.googleapis.com/exoplayer-test-media-0/play.mp3"

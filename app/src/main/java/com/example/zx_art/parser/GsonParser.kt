@@ -54,6 +54,9 @@ object GsonParser {
     }
 }
 
+//--------------------------------------------------------------------------------------------------
+
+
 //---------------------------CATEGORIES-------------------------------------------------------------
 
 interface API
@@ -102,11 +105,11 @@ data class ZxArtPicture(
     val responseData: ResponseData? = null,
     val responseStatus: String? = null,
     val start: Int? = null,
-    val totalAmount: Int? = null
+    val totalAmount: Int? = null,
 ) : API {
     data class ResponseData(
-        val zxPicture: List<ZxPicture?>? = null
-    )  {
+        val zxPicture: List<ZxPicture?>? = null,
+    ) {
         data class ZxPicture(
             val authorIds: List<Int?>? = null,
             val compo: String? = null,
@@ -124,10 +127,11 @@ data class ZxArtPicture(
             val type: String? = null,
             val url: String? = null,
             val views: String? = null,
-            val year: String? = null
+            val year: String? = null,
         )
     }
 }
+
 //--------------------------------------------------------------------------------------------------
 data class ZxArtAuthorWork(
     val responseData: ResponseData? = null,
@@ -147,7 +151,7 @@ data class ZxArtAuthorWork(
         val zxMusic: List<ZxMusic?>? = null,
         val zxPicture: List<Any?>? = null,
         val zxProd: List<ZxProd?>? = null,
-    )  {
+    ) {
         data class Author(
             val id: Int? = null,
             val searchTitle: String? = null,
@@ -198,7 +202,7 @@ data class ZxArtMusic(
             val plays: String,
             val rating: String,
             val tags: List<String>,
-            val time: String,
+            val time: String?,
             val title: String?,
             val type: String,
             val url: String,

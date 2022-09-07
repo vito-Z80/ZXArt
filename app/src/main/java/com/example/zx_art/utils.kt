@@ -1,5 +1,11 @@
 package com.example.zx_art
 
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.compose.material.Typography
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -8,6 +14,12 @@ package com.example.zx_art
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
+fun zxArtTime(time: String?): String {
+    return time?.split(".")?.get(0)?.split(":").let {
+        // FIXME если время по нулям то заменять двойными значаками вопросов (??:??)
+        String.format("%02d:%02d",
+            it?.get(0)?.toLong() ?: 0,
+            it?.get(1)?.toLong() ?: 0)
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////

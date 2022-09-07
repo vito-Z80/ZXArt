@@ -5,13 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -19,17 +17,16 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import com.example.zx_art.app.*
 import com.example.zx_art.net.Request
 import com.example.zx_art.ui.theme.ZXArtTheme
 import com.google.android.exoplayer2.util.Util
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.lifecycleScope
-import com.example.zx_art.app.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.tan
+import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 
 class MainActivity : ComponentActivity() {
@@ -40,12 +37,26 @@ class MainActivity : ComponentActivity() {
         MKey.corDef.launch {
             MKey.tunesTotalAmount = Request.getTunesMain()?.totalAmount ?: 0
         }
+        MKey.corMain.launch {
+            while (true) {
+                delay(1500)
+                if (exo?.contentPosition != null) {
+                    val minutes = exo?.contentPosition!! / 1000 / 60
+                    val seconds = exo?.contentPosition!! / 1000 % 60
+                    println(String.format("%02d:%02d", minutes, seconds))
+                }
+//                println(exo?.contentPosition)
+//                println(exo?.contentBufferedPosition)
+//                println(exo?.bufferedPosition)
+//                println(exo?.bufferedPercentage)
+//                println("------------------------------------")
+            }
+        }
 
 
         setContent {
 
             ZXArtTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background

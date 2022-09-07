@@ -2,8 +2,15 @@ package com.example.zx_art.app
 
 import android.content.Context
 import android.os.Looper
+import android.text.Html
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.core.text.htmlEncode
+import com.example.zx_art.GOOGLE_TUNE
+import com.example.zx_art.UNDEFINED_MESSAGE
+import com.example.zx_art.parser.ZxArtMusic
 import com.google.android.exoplayer2.*
+import io.ktor.http.*
 import kotlinx.coroutines.launch
 import java.util.zip.CRC32
 import kotlin.system.measureTimeMillis
@@ -56,45 +63,76 @@ fun updatePlaylist() {
 
 
 fun updateExoList() {
-    MKey.corMain.launch {
+    exo?.clearMediaItems()
+    MKey.showingTunes?.forEach {
+        // FIXME возможно внести в MediaItem больше информации типа metadata
+        val title = Html.fromHtml(it.title?.decodeURLPart() ?: UNDEFINED_MESSAGE, 256).toString()
+        val t = MediaItem.Builder().setUri(it.mp3FilePath ?: GOOGLE_TUNE).setMediaId(title).build()
+        exo?.addMediaItem(t)
+    }
+    println("MEDIA COUNT: ${exo?.mediaItemCount}")
+}
 
-        val time = measureTimeMillis {
 
-            val l = arrayListOf<MediaItem>()
-            MKey.showingTunes?.forEach {
-                // TODO нужна мелодия обзначающая отсутсвие мелодии на сервере !!!
-                val t = MediaItem.fromUri(it.mp3FilePath
-                    ?: "https://storage.googleapis.com/exoplayer-test-media-0/play.mp3")
-                // TODO добавить метадату
-//        val m = MediaItem.Builder()
-//            .build()
-//            .buildUpon()
-//        m.setMediaMetadata(MediaMetadata.Builder().setTitle("").build())
-//        m.setUri("")
-                l.add(t)
-            }
-            exo?.setMediaItems(l)
-            println("MEDIA COUNT: ${exo?.mediaItemCount}")
-        }
-        println("ExoList: $time")
+fun pausePlay() {
+    if (exo != null && exo!!.isPlaying) {
+        exo?.pause()
+    } else {
+        exo?.play()
+    }
+}
+// начать проигрывать мелодию по нажатию пользователя. пауза при повторном нажатии
+fun userTune(mediaItem: ZxArtMusic.ResponseData.ZxMusic, index: Int) {
+    // FIXME если на паузе нажать другую мелодию она не заиграет пока не отжать паузу
+    if (exo == null) return
+    if (mediaItem.title == exo?.currentMediaItem?.mediaId) {
+        pausePlay()
+    } else {
+        updateExoList()
+        exo?.seekTo(index, 0L)
     }
 }
 
+
+object PlayList {
+    /*
+    текущая мелодия играет всегда кроме случаев:
+        следующая мелодия
+        мелодия нажатая юзером
+
+    обновление плейлиста плеера (не визуально) происходит когда:
+        проиграла последняя мелодия плейлиста -
+            если плейлист не визуальный плейлист то в плейлист тащим визуальный плейлист
+            иначе загружаем следующий визуальный плейлист и тащим его в плейлист
+        мелодия нажата юзером - если плейлист не соответствует визуальному плейлисту
+
+     */
+
+
+    var id = mutableStateOf(-1)
+    var page = mutableStateOf(-1)
+    var numbers = mutableStateOf(16)
+
+}
+
+
 fun exoPlay(id: Int) {
 
-
+    // TODO пересмотреть данный метод/
     if (MKey.showingTunes != null && exo != null) {
-        if (exo!!.mediaItemCount != MKey.showingTunes!!.size
-            || MKey.PLAYING_PAGE != MKey.showingTunesPageNumber
-        ) {
-            println(MKey.PLAYING_PAGE != MKey.showingTunesPageNumber)
-            updateExoList()
-            MKey.PLAYING_PAGE = MKey.showingTunesPageNumber
+        MKey.corMain.launch {
+            if (exo!!.mediaItemCount != MKey.showingTunesCount
+                || MKey.PLAYING_PAGE != MKey.showingTunesPageNumber
+            ) {
+                println(MKey.PLAYING_PAGE != MKey.showingTunesPageNumber)
+                updateExoList()
+                MKey.PLAYING_PAGE = MKey.showingTunesPageNumber
+            }
+            exo?.seekTo(id, 0)
+            exo?.play()         // нужно для выхода из режима пауза, когда нажимают другой трек
+            MKey.playPauseLabel = true
+            MKey.playingTuneTitle = MKey.showingTunes?.get(MKey.PLAYING_ID)?.title!!
         }
-        exo?.seekTo(id, 0)
-        exo?.play()         // нужно для выхода из режима пауза, когда нажимают другой трек
-        MKey.playPauseLabel = true
-        MKey.playingTuneTitle = MKey.showingTunes?.get(MKey.PLAYING_ID)?.title!!
     }
 
 }
@@ -112,27 +150,43 @@ fun releaseExo() {
 }
 
 
-private const val TAG = "Player"
 private fun playbackState() = object : Player.Listener {
 
 
+    override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+        super.onTimelineChanged(timeline, reason)
+
+    }
+
+
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        super.onMediaItemTransition(mediaItem, reason)
+        // установка названия мелодии при изменении играющего трека
+        MKey.playingTuneTitle = mediaItem?.mediaId ?: UNDEFINED_MESSAGE
+    }
+
     override fun onEvents(player: Player, events: Player.Events) {
         super.onEvents(player, events)
+        // TODO использовать переменные для данных времени трека
+//        player.contentPosition
+//        player.duration
+//        player.contentDuration
+//        player.totalBufferedDuration
 //        Log.e("Playlist ID tune", "${player.currentMediaItemIndex}")
 //        Log.e("Position", "${player.currentPosition}")
 //        Log.e("Buffering", "${player.bufferedPosition}")
 
 
-        Player.EVENT_MEDIA_ITEM_TRANSITION
-
-        MKey.PLAYING_ID = player.currentMediaItemIndex
-        MKey.playingTuneTitle = "${MKey.showingTunes?.get(exo?.currentMediaItemIndex ?: 0)?.title}"
+//        Player.EVENT_MEDIA_ITEM_TRANSITION
+//
+//        MKey.PLAYING_ID = player.currentMediaItemIndex
+//        MKey.playingTuneTitle = "${MKey.showingTunes?.get(exo?.currentMediaItemIndex ?: 0)?.title}"
 
     }
 
     override fun onSeekForwardIncrementChanged(seekForwardIncrementMs: Long) {
         super.onSeekForwardIncrementChanged(seekForwardIncrementMs)
-        println(seekForwardIncrementMs)
+
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
