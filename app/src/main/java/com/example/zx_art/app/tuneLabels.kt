@@ -4,19 +4,21 @@ import android.text.Html
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.zx_art.EMPTY_MESSAGE
+import com.example.zx_art.*
 import com.example.zx_art.net.Request
 import com.example.zx_art.parser.ZxArtMusic
 import com.example.zx_art.ui.theme.ZXArtTheme
 import com.example.zx_art.ui.theme.tuneLinkColorDark
 import com.example.zx_art.ui.theme.tuneLinkColorLight
-import com.example.zx_art.zxArtTime
 import io.ktor.http.*
 
 @Composable
@@ -28,6 +30,9 @@ fun TuneLabels() {
     val playingId = remember { mutableStateOf(false) }
     val infoId = remember { mutableStateOf(-1) }
     val showInfo = remember { mutableStateOf(false) }
+
+
+
 
     LaunchedEffect(playingId.value) {
         exoPlay(MKey.PLAYING_ID)
@@ -83,15 +88,15 @@ fun TuneLabels() {
 
             item {
                 MKey.showingTunes?.forEachIndexed { index, music ->
-//                if (index >= MKey.showingTunesCount) return@forEachIndexed
+
                     Row(modifier = Modifier.fillMaxWidth()) {
 
                         Text(
-                            text = Html.fromHtml(music.title?.decodeURLPart() ?: "", 256)
+                            text = Html.fromHtml(music.title?.decodeURLPart() ?: UNDEFINED_MESSAGE, 256)
                                 .toString(),
                             modifier = Modifier
                                 .weight(1f)
-                                .background(color = if (index % 2 == 0) tuneLinkColorLight else tuneLinkColorDark)
+//                                .background(color = if (index % 2 == 0) tuneLinkColorLight else tuneLinkColorDark)
                                 .fillMaxWidth()
 
                                 .clickable {
@@ -101,7 +106,7 @@ fun TuneLabels() {
                                 }
                                 .padding(2f.dp)
                                 .horizontalScroll(ScrollState(0)),
-//                            color = Purple700,
+                            color = if (index % 2 == 0) ZxColor.TUNE_LABEL_LIST_1 else ZxColor.TUNE_LABEL_LIST_2,
                             softWrap = false,
                             style = MaterialTheme.typography.h4
 
@@ -116,7 +121,7 @@ fun TuneLabels() {
 //                                .background(color = Color(50, 74, 94, 255))
 
                         ) {
-                            TuneInfo(music = music, index = index)
+                            TuneInfoButton(music = music, index = index)
 //                            Text(text = "i",
 //                                modifier = Modifier
 //                                    .border(width = 1f.dp, color = Color(87, 109, 126, 255))
@@ -140,7 +145,7 @@ fun TuneLabels() {
                             style = MaterialTheme.typography.h1,
                         )
                     }
-
+                    Divider(color = ZxColor.LIST_DIVIDER)
                     // раскрывающийся блок информации о треке
 //                    AnimatedVisibility(visible = infoId.value == index && !showInfo.value
 ////                    if (infoId == index) {

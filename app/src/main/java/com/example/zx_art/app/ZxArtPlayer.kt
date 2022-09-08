@@ -68,6 +68,7 @@ fun updateExoList() {
         // FIXME возможно внести в MediaItem больше информации типа metadata
         val title = Html.fromHtml(it.title?.decodeURLPart() ?: UNDEFINED_MESSAGE, 256).toString()
         val t = MediaItem.Builder().setUri(it.mp3FilePath ?: GOOGLE_TUNE).setMediaId(title).build()
+//        val t = MediaItem.Builder().setUri(it.mp3FilePath ?: GOOGLE_TUNE).setTag(it).build()  // толкать сюда данные трека с сайта ?
         exo?.addMediaItem(t)
     }
     println("MEDIA COUNT: ${exo?.mediaItemCount}")

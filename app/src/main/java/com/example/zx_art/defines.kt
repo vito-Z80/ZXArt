@@ -3,7 +3,22 @@ package com.example.zx_art
 import androidx.compose.ui.graphics.Color
 
 
-const val FRAME = (1f/60f*1000f).toLong()
+class ZxColor {
+
+    companion object {
+
+        val RED = Color(236, 101, 101, 255)
+        val BLUE = Color.Blue
+
+
+        val TUNE_LABEL_LIST_1 = Color.LightGray
+        val TUNE_LABEL_LIST_2 = Color.White
+        val LIST_DIVIDER = Color.Cyan
+    }
+
+}
+
+const val FRAME = (1f / 60f * 1000f).toLong()
 
 val zxColor = listOf(
     Color.Black,
