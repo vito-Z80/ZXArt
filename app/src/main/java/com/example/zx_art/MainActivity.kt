@@ -36,22 +36,17 @@ class MainActivity : ComponentActivity() {
         // получить кол-во мелодий на сервере
         MKey.corDef.launch {
             MKey.tunesTotalAmount = Request.getTunesMain()?.totalAmount ?: 0
+
+//            var playingColorId = 0
+//            while (true) {
+//                delay((1f/25f*1000f).toLong())
+//                MKey.playingColor = zxColor[playingColorId]
+//                playingColorId = ++playingColorId and 7
+//            }
         }
-        MKey.corMain.launch {
-            while (true) {
-                delay(1500)
-                if (exo?.contentPosition != null) {
-                    val minutes = exo?.contentPosition!! / 1000 / 60
-                    val seconds = exo?.contentPosition!! / 1000 % 60
-                    println(String.format("%02d:%02d", minutes, seconds))
-                }
-//                println(exo?.contentPosition)
-//                println(exo?.contentBufferedPosition)
-//                println(exo?.bufferedPosition)
-//                println(exo?.bufferedPercentage)
-//                println("------------------------------------")
-            }
-        }
+//        MKey.corMain.launch {
+//
+//        }
 
 
         setContent {
@@ -101,12 +96,12 @@ class MainActivity : ComponentActivity() {
                             exoInit(LocalContext.current)
 
 
-
                             MusicScreen()
                         },
                         bottomBar = {}
                     )
                     // https://medium.com/wizeline-mobile/jetpack-compose-animations-i-f46024bcfa37
+                    TuneInfo()
                     LoadingMessage()
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.zx_art.ui.theme
 
+import android.graphics.LightingColorFilter
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -23,6 +24,8 @@ private val DarkColorPalette = darkColors(
     secondaryVariant = Color.Magenta
 )
 
+
+
 private val LightColorPalette = lightColors(
     primary = Purple500,
     primaryVariant = Purple700,
@@ -38,6 +41,7 @@ private val LightColorPalette = lightColors(
     onError = Color.Blue,
     secondaryVariant = Color.Magenta
 )
+
 
 @Composable
 fun ZXArtTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {

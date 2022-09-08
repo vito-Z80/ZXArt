@@ -1,10 +1,8 @@
 package com.example.zx_art.app
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import com.example.zx_art.parser.ZxArtMusic
+import com.example.zx_art.zxColor
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +32,11 @@ object MKey {
 
     // objects
 //    var zxArtMusic: ZxArtMusic? by mutableStateOf(null)      // полный список всех мелодий с сервера
+
+
+
+    // объект представляющий информацию о треке
+    var tuneInfo: ZxArtMusic.ResponseData.ZxMusic? by mutableStateOf(null)
 
     // TODO обрабатывать этот список, посмотреть как это будет по производительности !!!
 //    val showingItems = ArrayList<MutableState<ZxArtMusic.ResponseData.ZxMusic>?>()

@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.zx_art.FRAME
 import com.example.zx_art.LOADING_MESSAGE
 import com.example.zx_art.zxColor
 import kotlinx.coroutines.delay
@@ -32,7 +33,7 @@ fun LoadingMessage() {
         }
 
 
-        delay((1f / 50f * 1000f).toLong())
+        delay(FRAME)
         list.clear()
         var time = timer
         LOADING_MESSAGE.forEach { _ ->
