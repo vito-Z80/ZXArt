@@ -1,18 +1,16 @@
 package com.example.zx_art.app
 
 import android.content.Context
-import android.os.Looper
-import android.text.Html
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.text.htmlEncode
 import com.example.zx_art.GOOGLE_TUNE
 import com.example.zx_art.UNDEFINED_MESSAGE
+import com.example.zx_art.decodeText
 import com.example.zx_art.parser.ZxArtMusic
-import com.google.android.exoplayer2.*
-import io.ktor.http.*
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Timeline
 import kotlinx.coroutines.launch
-import java.util.zip.CRC32
 import kotlin.system.measureTimeMillis
 
 var exo: ExoPlayer? = null
@@ -66,7 +64,7 @@ fun updateExoList() {
     exo?.clearMediaItems()
     MKey.showingTunes?.forEach {
         // FIXME возможно внести в MediaItem больше информации типа metadata
-        val title = Html.fromHtml(it.title?.decodeURLPart() ?: UNDEFINED_MESSAGE, 256).toString()
+        val title = decodeText(it.title)
         val t = MediaItem.Builder().setUri(it.mp3FilePath ?: GOOGLE_TUNE).setMediaId(title).build()
 //        val t = MediaItem.Builder().setUri(it.mp3FilePath ?: GOOGLE_TUNE).setTag(it).build()  // толкать сюда данные трека с сайта ?
         exo?.addMediaItem(t)

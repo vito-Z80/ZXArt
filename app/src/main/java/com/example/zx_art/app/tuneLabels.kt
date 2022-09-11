@@ -7,11 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.zx_art.*
 import com.example.zx_art.net.Request
@@ -39,7 +37,7 @@ fun TuneLabels() {
     }
 
     LaunchedEffect(MKey.authorId) {
-        Request.getAuthorName()
+//        Request.getAuthorDataById()
     }
 
     ZXArtTheme {
@@ -92,8 +90,7 @@ fun TuneLabels() {
                     Row(modifier = Modifier.fillMaxWidth()) {
 
                         Text(
-                            text = Html.fromHtml(music.title?.decodeURLPart() ?: UNDEFINED_MESSAGE, 256)
-                                .toString(),
+                            text = decodeText(music.title),
                             modifier = Modifier
                                 .weight(1f)
 //                                .background(color = if (index % 2 == 0) tuneLinkColorLight else tuneLinkColorDark)
@@ -231,7 +228,7 @@ fun TuneLabelLine(
     Row(modifier = Modifier.fillMaxWidth()) {
 
         Text(
-            text = Html.fromHtml(tune.title?.decodeURLPart() ?: EMPTY_MESSAGE, 256).toString(),
+            text = decodeText(tune.title),
             modifier = Modifier
                 .weight(1f)
                 .background(color = if (index % 2 == 0) tuneLinkColorLight else tuneLinkColorDark)

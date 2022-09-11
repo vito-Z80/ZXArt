@@ -1,10 +1,10 @@
 package com.example.zx_art
 
-import android.os.Parcel
-import android.os.Parcelable
-import androidx.compose.material.Typography
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
+import android.icu.text.DateFormat
+import android.icu.text.SimpleDateFormat
+import android.text.Html
+import com.example.zx_art.app.MKey
+import java.util.*
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -22,4 +22,17 @@ fun zxArtTime(time: String?): String {
             it?.get(1)?.toLong() ?: 0)
     }
 }
+
+fun tuneInfoDateCreated(): String {
+    return try {
+        // FIXME как оно блят работает ???? всегда 70-е возвращает сцуко
+        SimpleDateFormat.getDateInstance(DateFormat.DATE_FIELD).format(Date(MKey.dateCreated))
+//        SimpleDateFormat("dd.MM.yy").format(Date(date.toLong()))
+    } catch (e: Exception) {
+        UNDEFINED_MESSAGE
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+fun decodeText(text: String?) =
+    Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT)?.toString() ?: UNDEFINED_MESSAGE

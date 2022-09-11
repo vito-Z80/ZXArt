@@ -1,26 +1,32 @@
 package com.example.zx_art.app
 
-import android.text.Html
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.SecureFlagPolicy
+import com.example.zx_art.*
 import com.example.zx_art.R
-import com.example.zx_art.UNDEFINED_MESSAGE
+import com.example.zx_art.net.Request
+import com.example.zx_art.net.goToLink
 import com.example.zx_art.parser.ZxArtMusic
-import io.ktor.http.*
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -41,44 +47,217 @@ fun TuneInfoButton(music: ZxArtMusic.ResponseData.ZxMusic, index: Int) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TuneInfo() {
-    if (MKey.tuneInfo != null)
-        Dialog(onDismissRequest = { MKey.tuneInfo = null },
-            properties = DialogProperties(usePlatformDefaultWidth = false)) {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(horizontal = 64f.dp, vertical = 96f.dp)
-                .border(width = 1f.dp,
-                    color = Color.DarkGray,
-                    shape = AbsoluteRoundedCornerShape(8f.dp))
-                .background(color = Color.LightGray, shape = AbsoluteRoundedCornerShape(8f.dp))
+    if (MKey.tuneInfo == null) return
+
+    LaunchedEffect(MKey.tuneInfo) {
+        println("LaunchEff")
+        withContext(coroutineContext) {
+            MKey.tuneInfo?.authorIds?.get(0)
+                ?.let { Request.getAuthorDataById(it) }
+        }.also {
+            println(MKey.tuneInfo?.dateCreated)
+            MKey.dateCreated = MKey.tuneInfo?.dateCreated ?: 0L
+
+        }
+    }
+
+    Dialog(onDismissRequest = { MKey.tuneInfo = null },
+        properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(horizontal = 64f.dp, vertical = 96f.dp)
+            .border(width = 1f.dp,
+                color = ZxColor.BORDER,
+                shape = AbsoluteRoundedCornerShape(8f.dp))
+            .background(color = ZxColor.INFO_BG, shape = AbsoluteRoundedCornerShape(8f.dp))
+        ) {
+
+            Column(modifier = Modifier
+                .padding(4f.dp)
             ) {
+                Title(tuneName = MKey.tuneInfo?.title ?: UNDEFINED_MESSAGE)
+                Divider(modifier = Modifier.padding(2f.dp), thickness = 2f.dp)
 
-                Column(modifier = Modifier
-                    .padding(4f.dp)
-                ) {
-                    Title(tuneName = MKey.tuneInfo?.title)
-                    Divider(modifier = Modifier.padding(2f.dp), thickness = 2f.dp)
-                    Column(modifier = Modifier) {
+                LazyColumn() {
+                    item { NickName() }
+                    item { RealName() }
+                    item { Rating() }
+                    item { Compo() }
+                    item { DateCreated() }
+                    item { Party() }
+                    item { Plays() }
+                    item { Tags() }
+                    item { Type() }
+                    item { ImportIds() }
+                }
 
-                        repeat(10) {
-                            Text(text = "item: $it",
-                                color = Color.DarkGray,
-                                style = MaterialTheme.typography.h1)
-                        }
+                Column(modifier = Modifier) {
+
+                    repeat(10) {
+                        Text(text = "item: $it",
+                            color = ZxColor.INFO_TEXT,
+                            style = MaterialTheme.typography.h1)
                     }
                 }
             }
         }
+    }
+}
+
+
+@Composable
+private fun Type() {
+    Label(text = "Type:",
+        clickableText = AnnotatedString(MKey.tuneInfo?.type ?: UNDEFINED_MESSAGE))
+}
+
+@Composable
+private fun Plays() {
+    Label(text = "Plays:",
+        clickableText = AnnotatedString(MKey.tuneInfo?.plays ?: UNDEFINED_MESSAGE))
+}
+
+@Composable
+private fun Party() {
+    Label(text = "Party:",
+        clickableText = AnnotatedString(MKey.tuneInfo?.partyPlace ?: UNDEFINED_MESSAGE))
+}
+
+@Composable
+private fun DateCreated() {
+    Label(text = "Created:", clickableText = AnnotatedString(tuneInfoDateCreated()))
+}
+
+@Composable
+private fun Compo() {
+    Label(text = "Compo:",
+        clickableText = AnnotatedString(MKey.tuneInfo?.compo ?: UNDEFINED_MESSAGE))
+}
+
+@Composable
+private fun Rating() {
+    Label(text = "Rating:",
+        clickableText = AnnotatedString(MKey.tuneInfo?.rating ?: UNDEFINED_MESSAGE))
+}
+
+@Composable
+private fun NickName() {
+    ClickableLabel(text = "Author:",
+        clickableText = AnnotatedString(MKey.nick ?: UNDEFINED_MESSAGE))
+}
+
+@Composable
+private fun RealName() {
+    ClickableLabel(text = "Real name:",
+        clickableText = AnnotatedString(MKey.realName ?: UNDEFINED_MESSAGE))
+}
+
+
+@Composable
+private fun Tags() {
+    Row {
+        Text(text = "Tags", modifier = Modifier.weight(1f))
+        Column() {
+            MKey.tuneInfo?.tags?.forEach {
+                Text(text = it ?: EMPTY_MESSAGE)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ZxLink(text: String, onClick: () -> Unit, enabled: Boolean = true) {
+    if (enabled) {
+        Text(text = text, modifier = Modifier
+            .padding(2f.dp)
+            .fillMaxWidth(0.7f)
+            .background(color = ZxColor.TUNE_LABEL_LIST_2)
+            .border(width = 1f.dp, color = ZxColor.BORDER)
+            .clickable { onClick.invoke() }
+            .padding(4f.dp),
+            color = ZxColor.BORDER,
+            softWrap = false,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.h1
+        )
+    } else {
+        Text(text = text, modifier = Modifier
+            .padding(2f.dp)
+            .fillMaxWidth(0.7f)
+            .background(color = ZxColor.TUNE_LABEL_LIST_3)
+            .border(width = 1f.dp, color = ZxColor.BORDER)
+            .padding(4f.dp),
+            color = ZxColor.BORDER,
+            softWrap = false,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.h1
+        )
+    }
+}
+
+@Composable
+private fun ImportIds() {
+
+    MKey.importIds?.`3a`
+
+    val handler = LocalUriHandler.current
+    Row {
+        Text(text = "Links:", modifier = Modifier.weight(1f))
+        Column() {
+            ZxLink(text = "Spectrum computing", onClick = {
+                goToLink(handler, "${Link.SPECTRUM_COMPUTING}${MKey.importIds?.sc}")
+            }, enabled = MKey.importIds?.sc != null)
+
+            ZxLink(text = "Zx tunes", onClick = {
+                goToLink(handler, "${Link.ZX_TUNES}${MKey.importIds?.zxt}")
+            }, enabled = MKey.importIds?.zxt != null)
+
+            ZxLink(text = "Pouet", onClick = {
+                goToLink(handler, "${Link.POUET}${MKey.importIds?.pouet}")
+            }, enabled = MKey.importIds?.pouet != null)
+
+            ZxLink(text = "Spectrum wiki", onClick = {
+                goToLink(handler, "${Link.SWIKI}${MKey.importIds?.swiki}")
+            }, enabled = MKey.importIds?.swiki != null)
+
+            ZxLink(text = "Zx AAA", onClick = {
+                goToLink(handler, "${Link.ZX_AAA}${MKey.importIds?.`3a`}")
+            }, enabled = MKey.importIds?.swiki != null)
+
+        }
+    }
+}
+
+@Composable
+private fun Label(text: String, clickableText: AnnotatedString) {
+    Row {
+        Text(text = text, modifier = Modifier.weight(1f))
+        Column() {
+            Text(text = clickableText)
+        }
+    }
+}
+
+@Composable
+private fun ClickableLabel(text: String, clickableText: AnnotatedString) {
+    Row {
+        Text(text = text, modifier = Modifier.weight(1f))
+        Column() {
+            ClickableText(text = clickableText, onClick = {
+                println(MKey.tuneInfo?.authorIds?.joinToString())
+            })
+        }
+    }
 }
 
 @Composable
 private fun Title(tuneName: String?) {
     Row(modifier = Modifier.fillMaxWidth(0.9f), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(
-            text = Html.fromHtml(tuneName?.decodeURLPart() ?: UNDEFINED_MESSAGE,256).toString(),
+            text = decodeText(tuneName),
             style = MaterialTheme.typography.h1,
-            color = Color.Blue,
+            color = ZxColor.INFO_TEXT,
             softWrap = false,
             modifier = Modifier
                 .fillMaxWidth(0.8f)

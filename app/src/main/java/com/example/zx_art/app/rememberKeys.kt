@@ -1,11 +1,10 @@
 package com.example.zx_art.app
 
 import androidx.compose.runtime.*
+import com.example.zx_art.parser.ZxArtAuthor
 import com.example.zx_art.parser.ZxArtMusic
 import com.example.zx_art.zxColor
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 
 object MKey {
 
@@ -15,24 +14,23 @@ object MKey {
     val corDef = CoroutineScope(Dispatchers.Default + coroutineExceptionHandler)
     val corMain = CoroutineScope(Dispatchers.Main + coroutineExceptionHandler)
 
+    init {
+        corMain.launch {
+            while (true) {
+                delay(67)
+                playingPosition = exo?.currentPosition ?: 0
+            }
+        }
+    }
+
     var PLAYING_ID by mutableStateOf(0)
     var PLAYING_PAGE by mutableStateOf(0)
     var PLAYING_POSITION by mutableStateOf(0L)
 
     var playPauseLabel by mutableStateOf(false)             // отображение метки проигрывание/пауза
-    var NEXT by mutableStateOf(-1)
-    var PREVIOUS by mutableStateOf(-1)
-
-    var REPEAT_THIS by mutableStateOf(false)
-    var REPEAT_ALL by mutableStateOf(false)
 
 
     var isPageUpload by mutableStateOf(false)
-    var autoLoadPage by mutableStateOf(0)               // если изменилось, значит нужно обновить плейлист визуально и в плеере
-
-    // objects
-//    var zxArtMusic: ZxArtMusic? by mutableStateOf(null)      // полный список всех мелодий с сервера
-
 
 
     // объект представляющий информацию о треке
@@ -49,6 +47,9 @@ object MKey {
     var aliases: String? by mutableStateOf(null)              // псевдонимы автора
     var city: String? by mutableStateOf(null)                 // город автора
     var authorId: Int by mutableStateOf(-1)                  // ID автора
+    var dateCreated: Long by mutableStateOf(0L)                  // дата создания
+
+    var importIds: ZxArtAuthor.ResponseData.Author.ImportIds? by mutableStateOf(null)                  // сторонние ссылки
 
 
     //
@@ -68,6 +69,9 @@ object MKey {
     var uploadProgress by mutableStateOf(0f)
 
     var showLoadingMessage by mutableStateOf(false)
+    var playingPosition by mutableStateOf(0L)
+
+
 }
 
 //  defines
