@@ -3,6 +3,7 @@ package com.example.zx_art.app
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -99,16 +100,18 @@ fun MusicScreen() {
 //                .width(IntrinsicSize.Min)
             ) {
 
-                Text(
-                    text = MKey.playingTuneTitle,
-                    softWrap = false,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(start = 2f.dp, end = 2f.dp)
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                        .horizontalScroll(scroll),
-                )
+                    PlayLine()
+                    Text(
+                        text = MKey.playingTuneTitle,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(start = 2f.dp, end = 2f.dp)
+                            .weight(1f)
+//                            .align(Alignment.CenterVertically)
+                            .horizontalScroll(scroll),
+                    )
+
 //                IconButton(modifier = Modifier
 //                    .padding(end = 0.dp),
 //                    onClick = {

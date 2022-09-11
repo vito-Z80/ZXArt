@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
+// Jetpack Compose Navigation в многомодульном проекте
+// https://habr.com/ru/company/moex/blog/586192/
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -98,7 +100,9 @@ class MainActivity : ComponentActivity() {
 
                             MusicScreen()
                         },
-                        bottomBar = {}
+                        bottomBar = {
+                            InputPage()
+                        }
                     )
                     // https://medium.com/wizeline-mobile/jetpack-compose-animations-i-f46024bcfa37
                     TuneInfo()

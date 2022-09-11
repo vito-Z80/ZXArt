@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.zx_art.app.file.FinderIcon
 import com.example.zx_art.net.Request
 import kotlinx.coroutines.*
 
@@ -103,6 +104,11 @@ private fun TunePagesLabel() {
             modifier = Modifier
                 .horizontalScroll(hScrollState)
         ) {
+
+            FinderIcon {
+
+            }
+
             val pagesCount = MKey.tunesTotalAmount / MKey.showingTunesCount
 
             if (MKey.showingTunesPageNumber > pagesCount) {

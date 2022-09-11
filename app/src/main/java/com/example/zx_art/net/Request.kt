@@ -3,11 +3,14 @@ package com.example.zx_art.net
 import android.content.Context
 import android.text.Html
 import android.util.Log
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.core.app.ComponentActivity
-import com.example.zx_art.FRAME
+import com.example.zx_art.EMPTY_MESSAGE
 import com.example.zx_art.UNDEFINED_MESSAGE
 import com.example.zx_art.app.MKey
 import com.example.zx_art.app.file.ZxFile
+import com.example.zx_art.decodeText
 import com.example.zx_art.parser.GsonParser
 import com.example.zx_art.parser.ZxArtAuthor
 import com.example.zx_art.parser.ZxArtAuthorWork
@@ -28,7 +31,6 @@ import java.io.FileOutputStream
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
-import kotlin.coroutines.suspendCoroutine
 import kotlin.random.Random
 
 // https://zxart.ee/eng/about/api/
@@ -378,9 +380,8 @@ object Request {
     private const val serverReconnect = "Reconnecting.........."
 
 
-    fun getAuthorArts(who:String?) {
+    fun getAuthorArts(who: String?) {
         if (who == null) return
-        println(Html.escapeHtml(who))
         cor.launch {
             MKey.showLoadingMessage = true
             val link = "https://zxart.ee/ajaxSearch/mode:public/types:author,authorAlias,party," +
@@ -395,33 +396,25 @@ object Request {
     }
 
 
-    fun getAuthorName() {
-        if (MKey.authorId >= 0) {
-            cor.launch {
-                MKey.showLoadingMessage = true
+    fun getAuthorDataById(authorId: Int) {
+//        if (MKey.authorId >= 0) {
+        cor.launch {
+            MKey.showLoadingMessage = true
 //            val link = "http://zxart.ee/api/export:authorAlias/filter:authorAliasId=$authorId"
-                val link = "http://zxart.ee/api/export:author/filter:authorId=${MKey.authorId}"
-                println(link)
-                val text = getRequest(link)//  получить список из l элкментов с сервера
-                val item = GsonParser.deserialize<ZxArtAuthor>(text)
-                MKey.nick = Html.fromHtml(
-                    item?.responseData?.author?.map { it?.title }?.joinToString()?.decodeURLPart()
-                        ?: UNDEFINED_MESSAGE,
-                    256
-                ).toString()
-                MKey.realName = Html.fromHtml(
-                    item?.responseData?.author?.map { it?.realName }?.joinToString()
-                        ?: UNDEFINED_MESSAGE,
-                    256
-                ).toString()
+            val link = "http://zxart.ee/api/export:author/filter:authorId=${authorId}"
+            println(link)
+            val text = getRequest(link)//  получить список из l элкментов с сервера
+            val item = GsonParser.deserialize<ZxArtAuthor>(text)
+            MKey.nick = decodeText(item?.responseData?.author?.map { it?.title }?.joinToString())
+            MKey.realName =
+                decodeText(item?.responseData?.author?.map { it?.realName }?.joinToString())
+            MKey.city = decodeText(item?.responseData?.author?.map { it?.city }?.joinToString())
 
-                MKey.city = Html.fromHtml(
-                    item?.responseData?.author?.map { it?.city }?.joinToString() ?: UNDEFINED_MESSAGE,
-                    256
-                ).toString()
-                MKey.showLoadingMessage = false
-            }
+            MKey.importIds = item?.responseData?.author?.get(0)?.importIds
+
+            MKey.showLoadingMessage = false
         }
+//        }
     }
 
 //    private suspend fun clearListFromEnd(ret: () -> Unit) {
@@ -598,7 +591,7 @@ object Request {
 
 //    var response: HttpResponse? = null
 
-    suspend fun post(url:String): String {
+    suspend fun post(url: String): String {
         val resp = client.post(url)
         Log.e("request STATUS", "${resp.status}")
         Log.e("response STATUS", "${resp.call.response.status}")
@@ -610,7 +603,6 @@ object Request {
 
     suspend fun getRequest(url: String): String? {
 //        delay(30)
-
 
 
         val resp = client.request(url.escapeHTML())
@@ -776,3 +768,8 @@ fun saveUrl(filename: String?, urlString: String?) {
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fun goToLink(handler: UriHandler, link: String) {
+    handler.openUri(link)
+}
