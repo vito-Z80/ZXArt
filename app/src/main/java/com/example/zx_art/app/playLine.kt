@@ -8,9 +8,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -57,10 +60,17 @@ fun PlayLine() {
             val mil = (exo?.duration?.minus(MKey.playingPosition) ?: 0) / 10L % 60
             val sec = (exo?.duration?.minus(MKey.playingPosition) ?: 0) / 1000L % 60
             val min = (exo?.duration?.minus(MKey.playingPosition) ?: 0) / 1000L / 60
-            Text(text = String.format("%02d:%02d:%02d",min, sec, mil),
-                modifier = Modifier.padding(end = 0f.dp),
-                style = MaterialTheme.typography.h2,
-                textAlign = TextAlign.Center)
+            if (min >= 0L && mil >= 0L && sec >= 0L) {
+                Text(text = String.format("%02d:%02d:%02d", min, sec, mil),
+                    modifier = Modifier.padding(end = 0f.dp),
+                    style = MaterialTheme.typography.h2,
+                    textAlign = TextAlign.Center)
+            } else {
+                Text(text = "00:00:00",
+                    modifier = Modifier.padding(end = 0f.dp),
+                    style = MaterialTheme.typography.h2,
+                    textAlign = TextAlign.Center)
+            }
         }
     }
 }

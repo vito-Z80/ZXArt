@@ -25,9 +25,7 @@ fun zxArtTime(time: String?): String {
 
 fun tuneInfoDateCreated(): String {
     return try {
-        // FIXME как оно блят работает ???? всегда 70-е возвращает сцуко
-        SimpleDateFormat.getDateInstance(DateFormat.DATE_FIELD).format(Date(MKey.dateCreated))
-//        SimpleDateFormat("dd.MM.yy").format(Date(date.toLong()))
+        SimpleDateFormat("dd.MM.yyyy", Locale("EN")).format(Date(MKey.dateCreated * 1000))
     } catch (e: Exception) {
         UNDEFINED_MESSAGE
     }
