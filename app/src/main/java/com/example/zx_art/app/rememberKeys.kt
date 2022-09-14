@@ -29,6 +29,9 @@ object MKey {
 
     var playPauseLabel by mutableStateOf(false)             // отображение метки проигрывание/пауза
 
+    var showPlaylistCatalog by mutableStateOf(true)        //  отображение каталога плейлистов
+    var showNewPlaylistInputName by mutableStateOf(false)   //  отображение текстфилд для ввода нвого имени каталога при создании нового каталога
+
 
     var isPageUpload by mutableStateOf(false)
 

@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -18,15 +20,12 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.example.zx_art.app.*
+import com.example.zx_art.app.playlist.InputNewPlaylistName
+import com.example.zx_art.app.playlist.PlayListCatalog
 import com.example.zx_art.net.Request
 import com.example.zx_art.ui.theme.ZXArtTheme
 import com.google.android.exoplayer2.util.Util
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
 
 // Jetpack Compose Navigation в многомодульном проекте
 // https://habr.com/ru/company/moex/blog/586192/
@@ -101,11 +100,12 @@ class MainActivity : ComponentActivity() {
                             MusicScreen()
                         },
                         bottomBar = {
-                            InputPage()
+//                            InputPage()
+                            InputNewPlaylistName()
                         }
                     )
-                    // https://medium.com/wizeline-mobile/jetpack-compose-animations-i-f46024bcfa37
                     TuneInfo()
+                    PlayListCatalog()
                     LoadingMessage()
                 }
             }

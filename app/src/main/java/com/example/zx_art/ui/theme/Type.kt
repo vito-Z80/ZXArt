@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import com.example.zx_art.R
+import com.example.zx_art.ZxColor
 
 val zxFont = FontFamily(Font(R.font.zxspectr, weight = FontWeight.Normal, style = FontStyle.Normal))
 
@@ -47,6 +48,16 @@ val Typography = Typography(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.W500,
         fontSize = 14.sp
+    ),
+    subtitle1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 24f.sp,
+        color = ZxColor.TUNE_LABEL_LIST_3
+    ),
+    subtitle2 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 16f.sp,
+        color = ZxColor.BLUE
     )
     /* Other default text styles to override
     button = TextStyle(
