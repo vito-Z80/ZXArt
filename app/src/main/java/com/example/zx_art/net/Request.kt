@@ -1,13 +1,9 @@
 package com.example.zx_art.net
 
 import android.content.Context
-import android.text.Html
 import android.util.Log
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.core.app.ComponentActivity
-import com.example.zx_art.EMPTY_MESSAGE
-import com.example.zx_art.UNDEFINED_MESSAGE
 import com.example.zx_art.app.MKey
 import com.example.zx_art.app.file.ZxFile
 import com.example.zx_art.decodeText
@@ -399,7 +395,7 @@ object Request {
     fun getAuthorDataById(authorId: Int) {
 //        if (MKey.authorId >= 0) {
         cor.launch {
-            MKey.showLoadingMessage = true
+//            MKey.showLoadingMessage = true
 //            val link = "http://zxart.ee/api/export:authorAlias/filter:authorAliasId=$authorId"
             val link = "http://zxart.ee/api/export:author/filter:authorId=${authorId}"
             println(link)
@@ -410,9 +406,11 @@ object Request {
                 decodeText(item?.responseData?.author?.map { it?.realName }?.joinToString())
             MKey.city = decodeText(item?.responseData?.author?.map { it?.city }?.joinToString())
 
-            MKey.importIds = item?.responseData?.author?.get(0)?.importIds
+            if (!item?.responseData?.author.isNullOrEmpty())
+                // TODO могут быть баги (14.09.22 добавлена мелодия без автора El Loco - Intro (AY) 1)
+                MKey.importIds = item?.responseData?.author?.get(0)?.importIds
 
-            MKey.showLoadingMessage = false
+//            MKey.showLoadingMessage = false
         }
 //        }
     }

@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
@@ -20,7 +21,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.example.zx_art.*
 import com.example.zx_art.R
 import com.example.zx_art.net.Request
@@ -50,56 +50,58 @@ fun TuneInfo() {
     if (MKey.tuneInfo == null) return
 
     LaunchedEffect(MKey.tuneInfo) {
-        println("LaunchEff")
         withContext(coroutineContext) {
             MKey.tuneInfo?.authorIds?.get(0)
                 ?.let { Request.getAuthorDataById(it) }
         }.also {
-            println(MKey.tuneInfo?.dateCreated)
             MKey.dateCreated = MKey.tuneInfo?.dateCreated ?: 0L
-
         }
     }
 
-    Dialog(onDismissRequest = { MKey.tuneInfo = null },
-        properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(horizontal = 64f.dp, vertical = 96f.dp)
+    Dialog(onDismissRequest = { MKey.tuneInfo = null }) {
+        Column(modifier = Modifier
+            .height(IntrinsicSize.Min)
             .border(width = 1f.dp,
                 color = ZxColor.BORDER,
                 shape = AbsoluteRoundedCornerShape(8f.dp))
             .background(color = ZxColor.INFO_BG, shape = AbsoluteRoundedCornerShape(8f.dp))
-        ) {
+            .padding(8f.dp),
+            verticalArrangement = Arrangement.Center) {
 
-            Column(modifier = Modifier
-                .padding(4f.dp)
+            Title(tuneName = MKey.tuneInfo?.title ?: UNDEFINED_MESSAGE)
+            Divider(color = ZxColor.BORDER, modifier = Modifier.padding(2f.dp))
+
+            LazyColumn(modifier = Modifier
+                .fillMaxWidth()
+                .height(384f.dp)
+                .padding(vertical = 1f.dp)
             ) {
-                Title(tuneName = MKey.tuneInfo?.title ?: UNDEFINED_MESSAGE)
-                Divider(modifier = Modifier.padding(2f.dp), thickness = 2f.dp)
+                item { NickName() }
+                item { RealName() }
+                item { Rating() }
+                item { Compo() }
+                item { DateCreated() }
+                item { Party() }
+                item { Plays() }
+                item { Tags() }
+                item { Type() }
+                item { ImportIds() }
+            }
 
-                LazyColumn() {
-                    item { NickName() }
-                    item { RealName() }
-                    item { Rating() }
-                    item { Compo() }
-                    item { DateCreated() }
-                    item { Party() }
-                    item { Plays() }
-                    item { Tags() }
-                    item { Type() }
-                    item { ImportIds() }
+            Divider(color = ZxColor.BORDER)
+            Row(modifier = Modifier
+                .padding(top = 4f.dp)
+                .fillMaxWidth()
+                .weight(1f),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+
+                ZxButton(text = "Add to playlist", textOffset = Offset(2f, -1f)) {
+                    println(MKey.tuneInfo?.title)
+                    MKey.tuneInfo = null
+                    MKey.showPlaylistCatalog = true
                 }
 
-                Column(modifier = Modifier) {
-
-                    repeat(10) {
-                        Text(text = "item: $it",
-                            color = ZxColor.INFO_TEXT,
-                            style = MaterialTheme.typography.h1)
-                    }
-                }
             }
         }
     }
