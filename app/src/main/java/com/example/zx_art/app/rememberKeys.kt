@@ -1,11 +1,16 @@
 package com.example.zx_art.app
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import com.example.zx_art.parser.ZxArtAuthor
 import com.example.zx_art.parser.ZxArtMusic
-import com.example.zx_art.zxColor
 import kotlinx.coroutines.*
 
+@OptIn(ExperimentalComposeUiApi::class)
 object MKey {
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -29,8 +34,8 @@ object MKey {
 
     var playPauseLabel by mutableStateOf(false)             // отображение метки проигрывание/пауза
 
-    var showPlaylistCatalog by mutableStateOf(true)        //  отображение каталога плейлистов
-    var showNewPlaylistInputName by mutableStateOf(false)   //  отображение текстфилд для ввода нвого имени каталога при создании нового каталога
+    var showPlaylistCatalog by mutableStateOf(false)        //  отображение каталога плейлистов
+//    var showNewPlaylistInputName by mutableStateOf(false)   //  отображение текстфилд для ввода нвого имени каталога при создании нового каталога
 
 
     var isPageUpload by mutableStateOf(false)
@@ -74,6 +79,11 @@ object MKey {
     var showLoadingMessage by mutableStateOf(false)
     var playingPosition by mutableStateOf(0L)
 
+
+    // remembers for keyboard
+    var keyboardFocus by mutableStateOf(false)
+    var keyboardController:SoftwareKeyboardController? by mutableStateOf(null)
+    var focus:FocusRequester by mutableStateOf(FocusRequester())
 
 }
 

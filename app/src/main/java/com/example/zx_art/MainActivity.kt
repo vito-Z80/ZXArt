@@ -12,15 +12,16 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.example.zx_art.app.*
-import com.example.zx_art.app.playlist.InputNewPlaylistName
 import com.example.zx_art.app.playlist.PlayListCatalog
 import com.example.zx_art.net.Request
 import com.example.zx_art.ui.theme.ZXArtTheme
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 // Jetpack Compose Navigation в многомодульном проекте
 // https://habr.com/ru/company/moex/blog/586192/
 
+@OptIn(ExperimentalComposeUiApi::class)
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,8 +102,7 @@ class MainActivity : ComponentActivity() {
                             MusicScreen()
                         },
                         bottomBar = {
-//                            InputPage()
-                            InputNewPlaylistName()
+                            MKey.keyboardController = LocalSoftwareKeyboardController.current
                         }
                     )
                     TuneInfo()
