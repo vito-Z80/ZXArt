@@ -2,6 +2,7 @@ package com.example.zx_art.app
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.focus.FocusRequester
@@ -35,7 +36,6 @@ object MKey {
     var playPauseLabel by mutableStateOf(false)             // отображение метки проигрывание/пауза
 
     var showPlaylistCatalog by mutableStateOf(false)        //  отображение каталога плейлистов
-//    var showNewPlaylistInputName by mutableStateOf(false)   //  отображение текстфилд для ввода нвого имени каталога при создании нового каталога
 
 
     var isPageUpload by mutableStateOf(false)

@@ -62,38 +62,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
 
                         topBar = {
-                            Row(
-                                horizontalArrangement = Arrangement.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(64.dp)
-                                    .padding(4.dp)
-                                    .background(
-                                        color = Color(163, 163, 163, 255),
-                                        AbsoluteRoundedCornerShape(topLeft = 16.dp,
-                                            topRight = 16.dp)
-                                    )
-                                    .padding(8.dp)
-                            ) {
-
-                                SubcomposeAsyncImage(model = "https://zxart.ee/project/images/public/logo.png",
-                                    contentDescription = null,
-                                    modifier = Modifier.height(128.dp)) {
-
-                                    val state = painter.state
-                                    if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-                                        CircularProgressIndicator()
-                                    } else {
-                                        SubcomposeAsyncImageContent()
-                                    }
-                                }
-//                                Image(
-//                                    painter = rememberAsyncImagePainter("https://zxart.ee/project/images/public/logo.png"),
-//                                    contentDescription = null,
-//                                    modifier = Modifier
-//                                        .height(128.dp)
-//                                    )
-                            }
+                            TopBar()
                         },
                         content = {
                             exoInit(LocalContext.current)

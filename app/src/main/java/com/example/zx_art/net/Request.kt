@@ -407,7 +407,7 @@ object Request {
             MKey.city = decodeText(item?.responseData?.author?.map { it?.city }?.joinToString())
 
             if (!item?.responseData?.author.isNullOrEmpty())
-                // TODO могут быть баги (14.09.22 добавлена мелодия без автора El Loco - Intro (AY) 1)
+            // TODO могут быть баги (14.09.22 добавлена мелодия без автора El Loco - Intro (AY) 1)
                 MKey.importIds = item?.responseData?.author?.get(0)?.importIds
 
 //            MKey.showLoadingMessage = false
@@ -461,6 +461,23 @@ object Request {
             MKey.showingTunes = page?.responseData?.zxMusic
             MKey.showLoadingMessage = false
         }
+    }
+
+    suspend fun loadPlaylist(file: File?): Boolean {
+        return cor.async {
+            MKey.showLoadingMessage = true
+            val res = withContext(coroutineContext) {
+                val list = GsonParser.deserialize<ZxArtMusic>(file?.readText())
+                if (list?.responseData?.zxMusic.isNullOrEmpty()) {
+                    return@withContext false
+                } else {
+                    MKey.showingTunes = list?.responseData?.zxMusic
+                    return@withContext true
+                }
+            }
+            MKey.showLoadingMessage = false
+            res
+        }.await()
     }
 
 
