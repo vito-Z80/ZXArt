@@ -16,6 +16,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.zx_art.app.MKey
 import java.util.*
@@ -49,18 +50,19 @@ fun tuneInfoDateCreated(): String {
 fun decodeText(text: String?) =
     Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT)?.toString() ?: UNDEFINED_MESSAGE
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-@Composable
-fun ZxButton(text: String, textOffset: Offset = Offset(0f, 0f), clickable: () -> Unit) {
-    Text(text = text,
-        modifier = Modifier
-            .border(width = 1f.dp, color = Color(87, 109, 126, 255))
-            .background(color = Color(105, 157, 201, 255))
-            .clickable { clickable.invoke() }
-            .offset(x = textOffset.x.dp, y = textOffset.y.dp)
-            .padding(2f.dp),
-        color = Color.Green,
-        style = MaterialTheme.typography.h2)
-}
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// TODO использовать кусок для прогрузки изображений.
+//        SubcomposeAsyncImage(model = "https://zxart.ee/project/images/public/logo.png",
+//            contentDescription = null,
+//            modifier = Modifier.height(128.dp)) {
+//            val state = painter.state
+//            if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
+//                CircularProgressIndicator()
+//            } else {
+//                SubcomposeAsyncImageContent()
+//            }
+//        }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

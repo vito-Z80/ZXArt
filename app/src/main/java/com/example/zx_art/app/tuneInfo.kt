@@ -10,11 +10,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -23,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.zx_art.*
 import com.example.zx_art.R
+import com.example.zx_art.additional.ZxButton
+import com.example.zx_art.app.playlist.PlaylistPopup
 import com.example.zx_art.net.Request
 import com.example.zx_art.net.goToLink
 import com.example.zx_art.parser.ZxArtMusic
@@ -48,6 +53,8 @@ fun TuneInfoButton(music: ZxArtMusic.ResponseData.ZxMusic, index: Int) {
 @Composable
 fun TuneInfo() {
     if (MKey.tuneInfo == null) return
+
+    val playlist = remember { mutableStateOf(false) }
 
     LaunchedEffect(MKey.tuneInfo) {
         withContext(coroutineContext) {
@@ -89,17 +96,19 @@ fun TuneInfo() {
             }
 
             Divider(color = ZxColor.BORDER)
+            PlaylistPopup(LocalContext.current, playlist)
+
             Row(modifier = Modifier
                 .padding(top = 4f.dp)
                 .fillMaxWidth()
                 .weight(1f),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-
+//                val context = LocalContext.current
                 ZxButton(text = "Add to playlist", textOffset = Offset(2f, -1f)) {
-                    println(MKey.tuneInfo?.title)
-                    MKey.tuneInfo = null
-                    MKey.showPlaylistCatalog = true
+//                    MKey.tuneInfo = null
+//                    MKey.showPlaylistCatalog = true
+                    playlist.value = true
                 }
 
             }

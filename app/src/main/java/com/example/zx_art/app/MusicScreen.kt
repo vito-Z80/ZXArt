@@ -25,7 +25,7 @@ fun MusicScreen() {
 //    var isPlaying = remember { mutableStateOf(false) }
     val scroll by remember { mutableStateOf(ScrollState(0)) }
 
-    var playPause by remember { mutableStateOf(R.drawable.audio_stop) }
+    var playPause by remember { mutableStateOf(R.drawable.pause_icon) }
 
     val audioButtonsModifier = Modifier
         .padding(end = 16f.dp)
@@ -130,7 +130,7 @@ fun MusicScreen() {
 //                    )
 //                }
 
-                Image(painter = painterResource(id = R.drawable.audio_backward),
+                Image(painter = painterResource(id = R.drawable.backward_icon),
                     contentDescription = null,
                     modifier = audioButtonsModifier
                         .clickable {
@@ -144,13 +144,13 @@ fun MusicScreen() {
                     modifier = audioButtonsModifier
                         .clickable {
                             playPause = when (playPause) {
-                                R.drawable.audio_stop -> {
+                                R.drawable.pause_icon -> {
                                     exo?.play()
-                                    R.drawable.audio_play
+                                    R.drawable.play_icon
                                 }
-                                R.drawable.audio_play -> {
+                                R.drawable.play_icon -> {
                                     exo?.pause()
-                                    R.drawable.audio_stop
+                                    R.drawable.pause_icon
                                 }
                                 else -> error("Wrong icon play/pause button")
                             }
@@ -158,7 +158,7 @@ fun MusicScreen() {
                         .align(Alignment.CenterVertically)
                 )
 
-                Image(painter = painterResource(id = R.drawable.audio_forward),
+                Image(painter = painterResource(id = R.drawable.forward_icon),
                     contentDescription = null,
                     modifier = audioButtonsModifier
                         .clickable {

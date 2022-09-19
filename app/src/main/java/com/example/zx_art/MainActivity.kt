@@ -1,6 +1,8 @@
 package com.example.zx_art
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -15,12 +17,14 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import com.example.zx_art.additional.CentralPopupMenu
 import com.example.zx_art.app.*
 import com.example.zx_art.app.playlist.PlayListCatalog
 import com.example.zx_art.net.Request
@@ -52,7 +56,9 @@ class MainActivity : ComponentActivity() {
 //        }
 
 
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
         setContent {
+
 
             ZXArtTheme {
                 Surface(
@@ -62,38 +68,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
 
                         topBar = {
-                            Row(
-                                horizontalArrangement = Arrangement.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(64.dp)
-                                    .padding(4.dp)
-                                    .background(
-                                        color = Color(163, 163, 163, 255),
-                                        AbsoluteRoundedCornerShape(topLeft = 16.dp,
-                                            topRight = 16.dp)
-                                    )
-                                    .padding(8.dp)
-                            ) {
-
-                                SubcomposeAsyncImage(model = "https://zxart.ee/project/images/public/logo.png",
-                                    contentDescription = null,
-                                    modifier = Modifier.height(128.dp)) {
-
-                                    val state = painter.state
-                                    if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
-                                        CircularProgressIndicator()
-                                    } else {
-                                        SubcomposeAsyncImageContent()
-                                    }
-                                }
-//                                Image(
-//                                    painter = rememberAsyncImagePainter("https://zxart.ee/project/images/public/logo.png"),
-//                                    contentDescription = null,
-//                                    modifier = Modifier
-//                                        .height(128.dp)
-//                                    )
-                            }
+                            TopBar()
                         },
                         content = {
                             exoInit(LocalContext.current)
@@ -107,6 +82,8 @@ class MainActivity : ComponentActivity() {
                     )
                     TuneInfo()
                     PlayListCatalog()
+                    MainMenuList()
+                    CentralPopupMenu()
                     LoadingMessage()
                 }
             }
