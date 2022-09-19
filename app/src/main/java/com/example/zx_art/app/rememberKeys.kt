@@ -41,6 +41,9 @@ object MKey {
     var isPageUpload by mutableStateOf(false)
 
 
+    var showMainMenu by mutableStateOf(false)
+    var showCentral by mutableStateOf(false)
+
     // объект представляющий информацию о треке
     var tuneInfo: ZxArtMusic.ResponseData.ZxMusic? by mutableStateOf(null)
 
@@ -82,8 +85,8 @@ object MKey {
 
     // remembers for keyboard
     var keyboardFocus by mutableStateOf(false)
-    var keyboardController:SoftwareKeyboardController? by mutableStateOf(null)
-    var focus:FocusRequester by mutableStateOf(FocusRequester())
+    var keyboardController: SoftwareKeyboardController? by mutableStateOf(null)
+    var focus: FocusRequester by mutableStateOf(FocusRequester())
 
 }
 

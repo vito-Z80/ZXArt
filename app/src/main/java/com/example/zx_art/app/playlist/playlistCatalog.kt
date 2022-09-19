@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.zx_art.ZxButton
 import com.example.zx_art.ZxColor
+import com.example.zx_art.additional.ZxButton
 import com.example.zx_art.app.MKey
 import com.example.zx_art.app.file.ZxFile
 import com.example.zx_art.net.Request

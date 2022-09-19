@@ -1,6 +1,8 @@
 package com.example.zx_art
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -15,12 +17,14 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import com.example.zx_art.additional.CentralPopupMenu
 import com.example.zx_art.app.*
 import com.example.zx_art.app.playlist.PlayListCatalog
 import com.example.zx_art.net.Request
@@ -52,7 +56,9 @@ class MainActivity : ComponentActivity() {
 //        }
 
 
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
         setContent {
+
 
             ZXArtTheme {
                 Surface(
@@ -76,6 +82,8 @@ class MainActivity : ComponentActivity() {
                     )
                     TuneInfo()
                     PlayListCatalog()
+                    MainMenuList()
+                    CentralPopupMenu()
                     LoadingMessage()
                 }
             }

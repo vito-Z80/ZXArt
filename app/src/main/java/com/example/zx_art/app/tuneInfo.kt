@@ -8,7 +8,10 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -23,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.zx_art.*
 import com.example.zx_art.R
+import com.example.zx_art.additional.ZxButton
+import com.example.zx_art.app.playlist.PlaylistPopup
 import com.example.zx_art.net.Request
 import com.example.zx_art.net.goToLink
 import com.example.zx_art.parser.ZxArtMusic
@@ -49,7 +54,7 @@ fun TuneInfoButton(music: ZxArtMusic.ResponseData.ZxMusic, index: Int) {
 fun TuneInfo() {
     if (MKey.tuneInfo == null) return
 
-    val playlist = remember { mutableStateOf(false)}
+    val playlist = remember { mutableStateOf(false) }
 
     LaunchedEffect(MKey.tuneInfo) {
         withContext(coroutineContext) {
@@ -91,7 +96,8 @@ fun TuneInfo() {
             }
 
             Divider(color = ZxColor.BORDER)
-            PopupList(LocalContext.current,playlist)
+            PlaylistPopup(LocalContext.current, playlist)
+
             Row(modifier = Modifier
                 .padding(top = 4f.dp)
                 .fillMaxWidth()
